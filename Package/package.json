@@ -1,0 +1,6 @@
+{
+  "name": "com.cringecoder69.unityreactivemvvm",
+  "version": "0.0.1",
+  "displayName": "UnityReactiveMVVM",
+  "description": "This package provides a simple and easy-to-use implementation of the MVVM (Model-View-ViewModel) pattern based on R3 and ObservableCollections libraries."
+}
