@@ -49,3 +49,52 @@ public class ProfileView : BaseView<ProfileViewModel>
 
 ## CodeGen
 Work in progress
+
+# Best practices
+
+## Composition over Inheritance
+Instead of relying on direct inheritance of views, use composition: include base views as fields or components inside extended views, and initialize them with the corresponding part of the ViewModel. This approach allows you to:
+  - Reuse common functionality without complicating or restricting the inheritance hierarchy,
+  - Work around Unity’s limitations regarding generic component classes,
+  - Create a more flexible and testable component structure.
+
+### Example
+
+```csharp
+public interface ICommonWindowViewModel
+{
+    Observable<bool> IsVisible { get; }
+}
+
+public interface IMyWindowViewModel
+{
+    ICommonWindowViewModel CommonWindowViewModel { get; }
+    Observable<string> Name { get; }
+}
+
+public class CommonWindowView : BaseView<ICommonWindowViewModel>
+{
+    protected override void BindViewModel(ICommonWindowViewModel viewModel)
+    {
+        base.BindViewModel(viewModel);
+        Bind(viewModel.IsVisible, isVisible => gameObject.SetActive(isVisible));
+    }
+}
+
+public class MyWindowView : BaseView<IMyWindowViewModel>
+{
+    [SerializeField] private CommonWindowView _windowView;
+
+    protected override void InitializeChildren(IMyWindowViewModel viewModel)
+    {
+        base.InitializeChildren(viewModel);
+        _windowView.Initialize(viewModel.CommonWindowViewModel);
+    }
+
+    protected override void BindViewModel(IMyWindowViewModel viewModel)
+    {
+        base.BindViewModel(viewModel);
+        Bind(viewModel.Name, name => Debug.Log(name));
+    }
+}
+```
