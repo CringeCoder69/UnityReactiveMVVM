@@ -21,21 +21,21 @@ namespace UnityReactiveMVVM
             if (viewModel == null)
                 return;
 
-            InitializeChildren(viewModel);
+            InitializeNested(viewModel);
             if (isActiveAndEnabled)
-                BindViewModel(viewModel);
+                BindSelf(viewModel);
         }
 
         private void OnEnable()
         {
             if (_viewModel != null)
-                BindViewModel(_viewModel);
+                BindSelf(_viewModel);
         }
 
         private void OnDisable() => _disposableBag.Clear();
 
-        protected virtual void InitializeChildren(TViewModel viewModel) { }
-        protected virtual void BindViewModel(TViewModel viewModel) { }
+        protected virtual void InitializeNested(TViewModel viewModel) { }
+        protected virtual void BindSelf(TViewModel viewModel) { }
 
         protected void Bind<TProperty>(Observable<TProperty> property, Action<TProperty> onNext) =>
             property.Subscribe(onNext).AddTo(ref _disposableBag);
